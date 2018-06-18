@@ -3,12 +3,6 @@ from __future__ import absolute_import
 
 import logging
 from . import opts
-from . import local
-from . import mpi
-from . import sge
-from . import yarn
-from . import mesos
-from . import kubernetes
 
 def config_logger(args):
     """Configure the logger according to the arguments
@@ -41,16 +35,22 @@ def main():
     config_logger(args)
 
     if args.cluster == 'local':
+        from . import local
         local.submit(args)
     elif args.cluster == 'sge':
+        from . import sge
         sge.submit(args)
     elif args.cluster == 'yarn':
+        from . import yarn
         yarn.submit(args)
     elif args.cluster == 'mpi':
+        from . import mpi
         mpi.submit(args)
     elif args.cluster == 'mesos':
+        from . import mesos
         mesos.submit(args)
     elif args.cluster == 'kubernetes':
+        from . import kubernetes
         kubernetes.submit(args)
     else:
         raise RuntimeError('Unknown submission cluster type %s' % args.cluster)
