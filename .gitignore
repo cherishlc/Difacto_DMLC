@@ -1,0 +1,9 @@
+*.a
+*.d
+*.o
+*.so
+*.so*
+deps/
+build/
+*.pb.h
+*.pb.cc
