@@ -148,7 +148,10 @@ ParseBlock(char *begin,
     if (r == 2) {
       // has weight
       out->weight.push_back(weight);
+    }else {
+	out->weight.push_back(1);
     }
+
     if (out->label.size() != 0) {
       out->offset.push_back(out->index.size());
     }
@@ -167,7 +170,10 @@ ParseBlock(char *begin,
       if (r == 2) {
         // has value
         out->value.push_back(value);
+      }else {
+	out->value.push_back(1);
       }
+
       p = q;
     }
     // next line
