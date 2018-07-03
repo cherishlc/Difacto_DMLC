@@ -23,7 +23,7 @@ class BinClassEval {
       buff[i].predict = predict_[i];
     }
     std::sort(buff.data(), buff.data()+n,  [](const Entry& a, const Entry&b) {
-        return a.predict < b.predict; });
+        return a.predict > b.predict; });
     V area = 0, cum_tp = 0;
     for (size_t i = 0; i < n; ++i) {
       if (buff[i].label > 0) {
@@ -34,7 +34,8 @@ class BinClassEval {
     }
     if (cum_tp == 0 || cum_tp == n) return 1;
     area /= cum_tp * (n - cum_tp);
-    return area < 0.5 ? 1 - area : area;
+    //return area < 0.5 ? 1 - area : area;
+    return area;
   }
 
   V Accuracy(V threshold) {
