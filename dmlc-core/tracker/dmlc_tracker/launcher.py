@@ -74,7 +74,10 @@ def main():
         unzip_archives(env['DMLC_JOB_ARCHIVES'].split(':'), env)
     
     print("cmd: %s"%" ".join(sys.argv[1:]))
-    ret = subprocess.call(args=sys.argv[1:], env=env)
+    for i in range(2):
+      ret = subprocess.call(args=sys.argv[1:], env=env)
+      print("exit code: %s"%ret)
+      if(ret==0):break;
     sys.exit(ret)
 
 

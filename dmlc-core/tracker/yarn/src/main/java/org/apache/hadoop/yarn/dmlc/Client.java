@@ -328,6 +328,8 @@ public class Client {
             }
             */
             yarnClient.killApplication(appId);
+            System.err.println("Exit now with error");
+            System.exit(-1);
         }
         System.err.println("Exit now");
 	System.exit(0);
