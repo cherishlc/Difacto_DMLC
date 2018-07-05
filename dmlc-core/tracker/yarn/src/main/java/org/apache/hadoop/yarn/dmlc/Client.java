@@ -319,14 +319,18 @@ public class Client {
                 + " state " + appState + " at " + appReport.getFinishTime());
         if (!appReport.getFinalApplicationStatus().equals(
                 FinalApplicationStatus.SUCCEEDED)) {
+            System.err.println("Application " + appId + "FAILED!");
             System.err.println(appReport.getDiagnostics());
+            /**
             System.out.println("Available queues:");
             for (QueueInfo q : yarnClient.getAllQueues()) {
               System.out.println(q.getQueueName());
             }
-
+            */
             yarnClient.killApplication(appId);
         }
+        System.err.println("Exit now");
+	System.exit(0);
     }
 
     class CtrlCHandler implements SignalHandler{

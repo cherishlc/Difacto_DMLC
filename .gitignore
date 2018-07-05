@@ -7,3 +7,4 @@ deps/
 build/
 *.pb.h
 *.pb.cc
+*.pyc
