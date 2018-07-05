@@ -128,7 +128,7 @@ class MinibatchScheduler : public IterScheduler {
     }
 
     if (model_out_.size()) {
-      printf("Saving the final model\n");
+      printf("Saving the final model to: \n\t%s\n",model_out_.c_str());
       Wait(SaveModel(model_out_, -1));
     }
     printf("Training is finished!\n");
