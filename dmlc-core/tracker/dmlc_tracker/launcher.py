@@ -72,7 +72,8 @@ def main():
     # unzip the archives.
     if 'DMLC_JOB_ARCHIVES' in env:
         unzip_archives(env['DMLC_JOB_ARCHIVES'].split(':'), env)
-
+    
+    print("cmd: %s"%" ".join(sys.argv[1:]))
     ret = subprocess.call(args=sys.argv[1:], env=env)
     sys.exit(ret)
 
