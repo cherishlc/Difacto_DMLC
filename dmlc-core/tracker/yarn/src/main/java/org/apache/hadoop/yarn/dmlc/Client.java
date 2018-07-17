@@ -319,7 +319,7 @@ public class Client {
                 + " state " + appState + " at " + appReport.getFinishTime());
         if (!appReport.getFinalApplicationStatus().equals(
                 FinalApplicationStatus.SUCCEEDED)) {
-            System.err.println("Application " + appId + "FAILED!");
+            System.err.println("Application " + appId + " FAILED!");
             System.err.println(appReport.getDiagnostics());
             /**
             System.out.println("Available queues:");
@@ -331,6 +331,7 @@ public class Client {
             System.err.println("Exit now with error");
             System.exit(-1);
         }
+        yarnClient.killApplication(appId);
         System.err.println("Exit now");
 	System.exit(0);
     }

@@ -5,6 +5,7 @@ import glob
 import sys
 import os
 import subprocess
+import time
 
 def unzip_archives(ar_list, env):
     for fname in ar_list:
@@ -74,10 +75,13 @@ def main():
         unzip_archives(env['DMLC_JOB_ARCHIVES'].split(':'), env)
     
     print("cmd: %s"%" ".join(sys.argv[1:]))
-    for i in range(2):
+    #print('env: %s'%env)
+    for i in range(3):
       ret = subprocess.call(args=sys.argv[1:], env=env)
-      print("exit code: %s"%ret)
+      print("dmlc launcher exit code: %s"%ret)
       if(ret==0):break;
+      print("sleep 10 seconds and try for the %sth time"%str(i+2))
+      time.sleep(10)
     sys.exit(ret)
 
 

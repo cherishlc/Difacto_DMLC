@@ -110,7 +110,14 @@ def yarn_submit(args, nworker, nserver, pass_env):
     def run():
         """internal running function."""
         logging.debug(cmd)
-        subprocess.check_call(cmd, shell=True, env=env)
+        print("yarn cmd: %s"%str(cmd))
+        try:
+            subprocess.check_call(cmd, shell=True, env=env)
+        except:
+            import traceback
+            traceback.print_exc()
+            import sys
+            sys.exit(-1)
 
     thread = Thread(target=run, args=())
     thread.setDaemon(True)
