@@ -106,12 +106,30 @@ class LogitLoss : public BinClassLoss<V> {
   virtual void CalcGrad(std::vector<V>* grad) {
     CHECK(init_);
     std::vector<V> dual(data_.size);
-#pragma omp parallel for num_threads(nt_)
-    for (size_t i = 0; i < data_.size; ++i) {
-      V y = data_.label[i] > 0 ? 1 : -1;
-      dual[i] = - y / ( 1 + exp ( y * Xw_[i] ));
-    }
+     if(data_.weight){
+        #pragma omp parallel for num_threads(nt_)
+        for (size_t i = 0; i < data_.size; ++i) {
+          V y = data_.label[i] > 0 ? 1 : -1;
+          dual[i] = - y / ( 1 + exp ( y * Xw_[i] )) * data_.weight[i];
+        }
+      }else{
+        #pragma omp parallel for num_threads(nt_)
+        for (size_t i = 0; i < data_.size; ++i) {
+          V y = data_.label[i] > 0 ? 1 : -1;
+          dual[i] = - y / ( 1 + exp ( y * Xw_[i] ));
+        }
+      }
     SpMV::TransTimes(data_, dual, grad, nt_);
+
+    /** 根据batch size进行归一化处理
+    if(data_.size>1){
+      auto& g=*grad;
+      auto f= 1.0f/data_.size;
+      #pragma omp parallel for num_threads(nt_)
+      for (size_t i = 0; i < g.size(); ++i) {
+        g[i]*=f;
+      }
+    }//*/
   }
 };
 

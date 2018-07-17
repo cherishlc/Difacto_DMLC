@@ -133,7 +133,14 @@ class MinibatchIter {
     if (!len) return;
     CHECK_LE(pos + len, in_blk_.size);
     RowBlock<IndexType> slice;
-    slice.weight = NULL;
+    // slice.weight = NULL;
+
+    if (in_blk_.weight) {
+      slice.weight = in_blk_.weight  + in_blk_.offset[pos];
+    } else {
+      slice.weight = NULL;
+    }
+
     slice.size = len;
     slice.offset  = in_blk_.offset + pos;
     slice.label   = in_blk_.label  + pos;
