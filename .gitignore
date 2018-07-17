@@ -8,5 +8,6 @@ build/
 *.pb.h
 *.pb.cc
 *.pyc
-dmlc_tracker/metastore_db/*
+*/metastore_db/
 *.log
+*/log/
