@@ -136,7 +136,7 @@ class MinibatchIter {
     // slice.weight = NULL;
 
     if (in_blk_.weight) {
-      slice.weight = in_blk_.weight  + in_blk_.offset[pos];
+      slice.weight = in_blk_.weight  + pos;
     } else {
       slice.weight = NULL;
     }

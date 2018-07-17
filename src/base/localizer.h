@@ -201,7 +201,7 @@ void Localizer<I>::RemapIndex(
   o->offset.resize(blk.size+1); o->offset[0] = 0;
   o->index.resize(matched);
   if (blk.value) o->value.resize(matched);
-  if (blk.weight) o->weight.resize(matched);
+  
 
   size_t k = 0;
   for (size_t i = 0; i < blk.size; ++i) {
@@ -210,8 +210,6 @@ void Localizer<I>::RemapIndex(
       if (remapped_idx[j] == 0) continue;
       ++ n;
       if (blk.value) o->value[k] = blk.value[j];
-      if (blk.weight) o->weight[k] = blk.weight[k];
-
       o->index[k++] = remapped_idx[j] - 1;
     }
     o->offset[i+1] = o->offset[i] + n;
@@ -222,7 +220,14 @@ void Localizer<I>::RemapIndex(
     o->label.resize(blk.size);
     memcpy(o->label.data(), blk.label, blk.size*sizeof(real_t));
   }
+  if (blk.weight){ 
+    o->weight.resize(blk.size);
+    memcpy(o->weight.data(), blk.weight, blk.size*sizeof(real_t));  
+  }
+
+
   o->max_index = idx_dict.size() - 1;
 }
+
 
 }  // namespace dmlc
