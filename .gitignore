@@ -8,6 +8,6 @@ build/
 *.pb.h
 *.pb.cc
 *.pyc
-*/metastore_db/
+metastore_db/
 *.log
-*/log/
+log/
