@@ -186,6 +186,7 @@ class SquareLoss : public ScalarLoss<V> {
   using ScalarLoss<V>::init_;
 
   virtual void Evaluate(Progress* prog) {
+    ScalarLoss<V>::Evaluate(prog);
     V objv = 0;
 #pragma omp parallel for reduction(+:objv) num_threads(nt_)
     for (size_t i = 0; i < data_.size; ++i) {
