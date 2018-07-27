@@ -175,12 +175,78 @@ class SquareHingeLoss : public BinClassLoss<V> {
 };
 
 /**
- * \brief squared loss \f$ \frac12 (p-y)^2 \f$
+ * \brief squared loss \f$ \frac{1}{2} (min(1,max(p,0))-y)^2 \f$
  */
 template <typename V>
 class SquareLoss : public ScalarLoss<V> {
  public:
-  // TODO
+  using ScalarLoss<V>::data_;
+  using ScalarLoss<V>::Xw_;
+  using ScalarLoss<V>::nt_;
+  using ScalarLoss<V>::init_;
+
+  virtual void Evaluate(Progress* prog) {
+    V objv = 0;
+#pragma omp parallel for reduction(+:objv) num_threads(nt_)
+    for (size_t i = 0; i < data_.size; ++i) {
+      V y = data_.label[i];
+      auto p=Xw_[i];
+      if(p<0){
+        p=0;
+      } else if(p>1){
+        p=1;
+      }
+
+      auto d=p-y;
+      objv+=0.5*d*d;
+    }
+
+    if(data_.size >1) objv/=data_.size;
+    prog->objv()=objv;
+    prog->auc()=-1;
+    prog->acc()=-1;
+
+  }
+
+
+  virtual void CalcGrad(std::vector<V>* grad) {
+    CHECK(init_);
+    std::vector<V> dual(data_.size);
+
+     if(data_.weight){
+        #pragma omp parallel for num_threads(nt_)
+        for (size_t i = 0; i < data_.size; ++i) {
+          V y = data_.label[i];
+          auto p=Xw_[i];
+          if(p<0){
+            p=0;
+          } else if(p>1){
+            p=1;
+          }
+
+          auto d=p-y;
+          dual[i] = d*data_.weight[i];
+        }
+      }else{
+        #pragma omp parallel for num_threads(nt_)
+        for (size_t i = 0; i < data_.size; ++i) {
+          V y = data_.label[i];
+          auto p=Xw_[i];
+          if(p<0){
+            p=0;
+          } else if(p>1){
+            p=1;
+          }
+
+          auto d=p-y;
+          dual[i] = d;
+        }
+      }
+
+    SpMV::TransTimes(data_, dual, grad, nt_);
+
+  }
+
 };
 
 /**
@@ -189,6 +255,9 @@ class SquareLoss : public ScalarLoss<V> {
 template <typename V>
 static ScalarLoss<V>* CreateLoss(Config::Loss loss) {
   switch (loss) {
+    case Config::SQUARE:
+       return new SquareLoss<V>();
+
     case Config::LOGIT:
       return new LogitLoss<V>();
     case Config::SQUARE_HINGE:
